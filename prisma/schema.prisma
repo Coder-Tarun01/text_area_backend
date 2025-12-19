@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String   @id @default(uuid()) @map("id")
+  email           String   @unique
+  username        String   @unique
+  password        String
+  user_type       String   @default("user") @map("user_type") // "admin" or "user"
+  job_post_count  Int      @default(0) @map("job_post_count")
+  date            DateTime @default(now()) @map("date") @db.Date
+  jobs            Job[]
+
+  @@map("users")
+}
+
+model Job {
+  job_id                  String    @id @map("job_id")
+  title                   String    @db.Text
+  organization            String?   @db.Text
+  department              String?   @db.Text
+  category                String?   @db.Text
+  job_type                String?   @map("job_type") @db.Text
+  location                String?   @db.Text
+  eligibility             String?   @db.Text
+  qualification           String?   @db.Text
+  education               String?   @db.Text
+  experience              String?   @db.Text
+  preferred_qualifications String?  @map("preferred_qualifications") @db.Text
+  requirements            String?   @db.Text
+  skills                  String?   @db.Text
+  salary                  String?   @db.Text
+  applicants              String?   @db.Text
+  responsibilities        String?   @db.Text
+  description             String?   @db.Text
+  apply_link              String?   @map("apply_link") @db.Text
+  notification_pdf        String?   @map("notification_pdf") @db.Text
+  posted_date             DateTime? @map("posted_date") @db.Date
+  last_date               DateTime? @map("last_date") @db.Date
+  source                  String?   @db.Text
+  source_url              String?   @map("source_url") @db.Text
+  user_id                 String?   @map("user_id")
+  created_at              DateTime? @default(now()) @map("created_at") @db.Timestamptz
+  updated_at              DateTime? @updatedAt @map("updated_at") @db.Timestamptz
+  user                    User?     @relation(fields: [user_id], references: [id], onDelete: SetNull)
+
+  @@map("jobs")
+}
+
